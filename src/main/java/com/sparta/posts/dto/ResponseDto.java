@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ResponseDto {
+public class ResponseDto { // ResponssDto 최상위 클래스
     private String msg;
 
     public ResponseDto(String msg){

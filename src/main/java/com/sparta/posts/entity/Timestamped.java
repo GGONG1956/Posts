@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public class Timestamped {
+    // 날짜 생성을 위한 클래스
 
     @CreatedDate
     private LocalDateTime createdAt;

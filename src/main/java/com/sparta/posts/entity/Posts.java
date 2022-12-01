@@ -32,6 +32,7 @@ public class Posts extends Timestamped {
         this.password = password;
     }
 
+    // 요청 데이터를 위한 생성자
     public Posts(PostsRequestDto requestDto){
         this.contents = requestDto.getContents();
         this.title = requestDto.getTitle();
@@ -39,6 +40,7 @@ public class Posts extends Timestamped {
         this.password = requestDto.getPassword();
     }
 
+    // 게시글 수정을 위한 생성자
     public void update(String title, String contents) {
         this.title = title;
         this.contents = contents;

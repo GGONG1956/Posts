@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,34 +21,38 @@ public class PostsService {
 
     private final PostsRepository postsRepository;
 
+    // 게시글 작성
     @Transactional
-    public ResponseDto createPosts(PostsRequestDto requestDto){
+    public PostsResponseDto createPosts(PostsRequestDto requestDto){
         Posts posts = new Posts(requestDto);
         postsRepository.save(posts);
-        return new ResponseDto("게시글 등록 완료");
+        return new PostsResponseDto(posts);
  }
 
+    // 특정 게시글 조회
     @Transactional(readOnly = true)
     public PostsResponseDto getPosts(Long id) {
       Posts posts = postsRepository.findById(id).orElseThrow(
-              () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
+              () -> new NullPointerException("게시글이 존재하지 않습니다.")
       );
       return new PostsResponseDto(posts);
     }
 
+    // 게시글 목록 전체 조회
     @Transactional(readOnly = true)
-    public PostsListResponseDto postslist() {
+    public List<PostsResponseDto> postslist() {
 
-        PostsListResponseDto postsListResponseDto = new PostsListResponseDto();
+        List<PostsResponseDto> postlist = new ArrayList<>();
 
-        List<Posts> postsList = postsRepository.findAll();
+        List<Posts> postsList = postsRepository.findAllByOrderByModifiedAtAsc();
 
         for(Posts posts : postsList){
-            postsListResponseDto.addPosts(new PostsResponseDto(posts));
+            postlist.add(new PostsResponseDto(posts));
         }
-
-        return postsListResponseDto;
+        return postlist;
     }
+
+    // 게시글 수정
     @Transactional
     public PostsResponseDto updatePosts(Long id, PostsRequestDto requestDto){
 
@@ -64,6 +70,7 @@ public class PostsService {
         return new PostsResponseDto(posts);
     }
 
+    // 게시글 삭제
     @Transactional
     public ResponseDto deletePosts(Long id, PostsRequestDto requestDto) {
 
@@ -80,8 +87,10 @@ public class PostsService {
     }
 
 
+    // 비밀번호 검사를 위한 메서드
     @Transactional
     public boolean checkPw(Long id, PostsRequestDto requestDto) {
+
         Posts posts = postsRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
