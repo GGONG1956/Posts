@@ -13,36 +13,37 @@ import javax.persistence.*;
 public class Posts extends Timestamped {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
-    private String username;
-    @Column(nullable = false)
     private String contents;
     @Column(nullable = false)
-    private String password;
+    private Long userId;
 
-    public Posts(String username, String contents, String title, String password){
+    public Posts(String contents, String title){
         this.contents = contents;
         this.title = title;
-        this.username = username;
-        this.password = password;
     }
 
     // 요청 데이터를 위한 생성자
-    public Posts(PostsRequestDto requestDto){
+    public Posts(PostsRequestDto requestDto, Long userId){
         this.contents = requestDto.getContents();
         this.title = requestDto.getTitle();
-        this.username = requestDto.getUsername();
-        this.password = requestDto.getPassword();
+        this.userId = userId;
     }
+
 
     // 게시글 수정을 위한 생성자
     public void update(String title, String contents) {
         this.title = title;
         this.contents = contents;
+    }
+
+    public void update(PostsRequestDto requestDto) {
+        this.contents = requestDto.getContents();
+        this.title = requestDto.getTitle();
     }
 }

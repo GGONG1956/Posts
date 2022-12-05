@@ -8,20 +8,22 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class PostsResponseDto {
+public class PostDetailResponseDto{
 
-    // 게시글 단순 조회, 게시글 작성에 사용될 Dto
     private Long id;
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
     private String title;
     private String contents;
-    public PostsResponseDto(Posts posts) {
+    private String username;
+
+
+    public PostDetailResponseDto(Posts posts, String username) {
         this.id = posts.getId();
         this.createAt = posts.getCreatedAt();
         this.modifiedAt = posts.getModifiedAt();
         this.title = posts.getTitle();
         this.contents = posts.getContents();
+        this.username = username;
     }
-
 }
