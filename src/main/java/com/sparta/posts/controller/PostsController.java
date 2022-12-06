@@ -1,7 +1,6 @@
 package com.sparta.posts.controller;
 
 
-import com.sparta.posts.dto.PostDetailResponseDto;
 import com.sparta.posts.dto.PostsRequestDto;
 import com.sparta.posts.dto.PostsResponseDto;
 import com.sparta.posts.dto.ResponseDto;
@@ -32,13 +31,13 @@ public class PostsController {
 
     // 게시글 작성
     @PostMapping("/api/post")
-    public PostDetailResponseDto createPosts(@RequestBody PostsRequestDto requestDto, HttpServletRequest request){
+    public PostsResponseDto createPosts(@RequestBody PostsRequestDto requestDto, HttpServletRequest request){
 
         return postsService.createPosts(requestDto, request);
     }
 
     // 게시글 수정
-    @PutMapping ("/api/post/update/{id}")
+    @PatchMapping ("/api/post/update/{id}")
     public PostsResponseDto updatePosts(@PathVariable Long id, @RequestBody PostsRequestDto requestDto, HttpServletRequest request){
         return postsService.updatePosts(id, requestDto, request);
     }

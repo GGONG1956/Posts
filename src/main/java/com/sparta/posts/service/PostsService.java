@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class PostsService {
 
     // 게시글 작성
     @Transactional
-    public PostDetailResponseDto createPosts(PostsRequestDto requestDto, HttpServletRequest request) {
+    public PostsResponseDto createPosts(PostsRequestDto requestDto, HttpServletRequest request) {
 
         // 웹에서 토큰 가져오기
         String token = jwtUtil.resolveToken(request);
@@ -50,9 +51,9 @@ public class PostsService {
 
             System.out.println(requestDto.getContents());
             // 요청받은 DTO 로 DB에 저장할 객체 만들기
-            Posts posts = postsRepository.saveAndFlush(new Posts(requestDto, user.getId()));
+            Posts posts = postsRepository.saveAndFlush(new Posts(requestDto, user.getId(),user.getUsername()));
 
-            return new PostDetailResponseDto(posts, user.getUsername());
+            return new PostsResponseDto(posts, user.getUsername());
         } else {
             return null;
         }
@@ -64,7 +65,8 @@ public class PostsService {
         Posts posts = postsRepository.findById(id).orElseThrow(
                 () -> new NullPointerException("게시글이 존재하지 않습니다.")
         );
-        return new PostsResponseDto(posts);
+        Long userId = posts.getUserId();
+        return new PostsResponseDto(posts, posts.getUsername());
     }
 
     // 게시글 목록 전체 조회
@@ -76,7 +78,7 @@ public class PostsService {
         List<Posts> postsList = postsRepository.findAllByOrderByModifiedAtAsc();
 
         for (Posts posts : postsList) {
-            postlist.add(new PostsResponseDto(posts));
+            postlist.add(new PostsResponseDto(posts, posts.getUsername()));
         }
         return postlist;
     }
@@ -106,16 +108,12 @@ public class PostsService {
             );
 
             Posts posts = postsRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
-                    () -> new NullPointerException("해당 게시글은 존재하지 않습니다.")
+                    () -> new NullPointerException("사용자가 일치하지 않습니다.")
             );
-            if (user.getId().equals(posts.getId())){
                 posts.update(requestDto);
-            }else {
-                new IllegalArgumentException("사용자가 일치하지 않습니다.");
-            }
 
 
-            return new PostsResponseDto(posts);
+            return new PostsResponseDto(posts, posts.getUsername());
 
         } else {
             return null;
@@ -150,7 +148,7 @@ public class PostsService {
                 postsRepository.deleteById(id);
 
 
-            return new ResponseDto("삭제 성공");
+            return new ResponseDto("삭제 성공", 200);
         } else {
             return null;
         }

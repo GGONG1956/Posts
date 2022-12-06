@@ -22,6 +22,8 @@ public class Posts extends Timestamped {
     private String contents;
     @Column(nullable = false)
     private Long userId;
+    @Column(nullable = false)
+    private String username;
 
     public Posts(String contents, String title){
         this.contents = contents;
@@ -29,10 +31,11 @@ public class Posts extends Timestamped {
     }
 
     // 요청 데이터를 위한 생성자
-    public Posts(PostsRequestDto requestDto, Long userId){
+    public Posts(PostsRequestDto requestDto, Long userId,String username){
         this.contents = requestDto.getContents();
         this.title = requestDto.getTitle();
         this.userId = userId;
+        this.username = username;
     }
 
 

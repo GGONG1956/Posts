@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ResponseDto { // ResponssDto 최상위 클래스
     private String msg;
-
-    public ResponseDto(String msg){
+    private int statusCode;
+    public ResponseDto(String msg, int statusCode){
         this.msg = msg;
+        this.statusCode = statusCode;
     }
 
 }

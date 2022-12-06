@@ -16,12 +16,14 @@ public class PostsResponseDto {
     private LocalDateTime modifiedAt;
     private String title;
     private String contents;
-    public PostsResponseDto(Posts posts) {
+    private String username;
+    public PostsResponseDto(Posts posts, String username) {
         this.id = posts.getId();
         this.createAt = posts.getCreatedAt();
         this.modifiedAt = posts.getModifiedAt();
         this.title = posts.getTitle();
         this.contents = posts.getContents();
+        this.username = username;
     }
 
 }

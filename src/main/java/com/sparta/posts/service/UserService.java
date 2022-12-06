@@ -1,6 +1,7 @@
 package com.sparta.posts.service;
 
 import com.sparta.posts.dto.LoginRequestDto;
+import com.sparta.posts.dto.ResponseDto;
 import com.sparta.posts.dto.SignupRequestDto;
 import com.sparta.posts.entity.User;
 import com.sparta.posts.jwt.JwtUtil;
@@ -20,7 +21,7 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public void signup(SignupRequestDto signupRequestDto) {
+    public ResponseDto signup(SignupRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
         String password = signupRequestDto.getPassword();
         // 회원 중복 확인
@@ -32,10 +33,12 @@ public class UserService {
 
         User user = new User(username, password);
         userRepository.save(user);
+
+        return new ResponseDto("회원가입 성공", 200);
     }
 
     @Transactional(readOnly = true)
-    public void login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public ResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
         String username = loginRequestDto.getUsername();
         String password = loginRequestDto.getPassword();
 
@@ -49,5 +52,7 @@ public class UserService {
         }
 
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(user.getUsername()));
+
+        return new ResponseDto("로그인 성공", 200);
     }
 }

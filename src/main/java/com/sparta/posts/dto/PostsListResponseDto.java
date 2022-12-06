@@ -13,7 +13,7 @@ public class PostsListResponseDto extends ResponseDto{
     List<PostsResponseDto> postslist = new ArrayList<>();
 
     public PostsListResponseDto(){
-        super("게시글 목록 조회 성공");
+        super("게시글 목록 조회 성공",200);
     }
     // 포스트를 list에 담기 위한 메서드
     public void addPosts(PostsResponseDto responseDto){
