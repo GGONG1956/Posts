@@ -3,14 +3,15 @@ package com.sparta.posts.entity;
 import com.sparta.posts.dto.PostsRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
 @NoArgsConstructor
-public class Posts extends Timestamped {
+public class Post extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,13 +26,16 @@ public class Posts extends Timestamped {
     @Column(nullable = false)
     private String username;
 
-    public Posts(String contents, String title){
+    @OneToMany(mappedBy = "post")
+    private List<Comment> comments = new ArrayList<Comment>();
+
+    public Post(String contents, String title){
         this.contents = contents;
         this.title = title;
     }
 
     // 요청 데이터를 위한 생성자
-    public Posts(PostsRequestDto requestDto, Long userId,String username){
+    public Post(PostsRequestDto requestDto, Long userId, String username){
         this.contents = requestDto.getContents();
         this.title = requestDto.getTitle();
         this.userId = userId;

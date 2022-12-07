@@ -1,7 +1,7 @@
 package com.sparta.posts.service;
 
 import com.sparta.posts.dto.*;
-import com.sparta.posts.entity.Posts;
+import com.sparta.posts.entity.Post;
 import com.sparta.posts.entity.User;
 import com.sparta.posts.jwt.JwtUtil;
 import com.sparta.posts.repository.PostsRepository;
@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -51,9 +50,9 @@ public class PostsService {
 
             System.out.println(requestDto.getContents());
             // 요청받은 DTO 로 DB에 저장할 객체 만들기
-            Posts posts = postsRepository.saveAndFlush(new Posts(requestDto, user.getId(),user.getUsername()));
+            Post post = postsRepository.saveAndFlush(new Post(requestDto, user.getId(),user.getUsername()));
 
-            return new PostsResponseDto(posts, user.getUsername());
+            return new PostsResponseDto(post, user.getUsername());
         } else {
             return null;
         }
@@ -62,11 +61,11 @@ public class PostsService {
     // 특정 게시글 조회
     @Transactional(readOnly = true)
     public PostsResponseDto getPosts(Long id) {
-        Posts posts = postsRepository.findById(id).orElseThrow(
+        Post post = postsRepository.findById(id).orElseThrow(
                 () -> new NullPointerException("게시글이 존재하지 않습니다.")
         );
-        Long userId = posts.getUserId();
-        return new PostsResponseDto(posts, posts.getUsername());
+        Long userId = post.getUserId();
+        return new PostsResponseDto(post, post.getUsername());
     }
 
     // 게시글 목록 전체 조회
@@ -75,10 +74,10 @@ public class PostsService {
 
         List<PostsResponseDto> postlist = new ArrayList<>();
 
-        List<Posts> postsList = postsRepository.findAllByOrderByModifiedAtAsc();
+        List<Post> postsList = postsRepository.findAllByOrderByModifiedAtAsc();
 
-        for (Posts posts : postsList) {
-            postlist.add(new PostsResponseDto(posts, posts.getUsername()));
+        for (Post post : postsList) {
+            postlist.add(new PostsResponseDto(post, post.getUsername()));
         }
         return postlist;
     }
@@ -107,13 +106,13 @@ public class PostsService {
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
 
-            Posts posts = postsRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+            Post post = postsRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
                     () -> new NullPointerException("사용자가 일치하지 않습니다.")
             );
-                posts.update(requestDto);
+                post.update(requestDto);
 
 
-            return new PostsResponseDto(posts, posts.getUsername());
+            return new PostsResponseDto(post, post.getUsername());
 
         } else {
             return null;
@@ -141,7 +140,7 @@ public class PostsService {
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
 
-            Posts posts = postsRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+            Post posts = postsRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
                     () -> new NullPointerException("해당 게시글은 존재하지 않습니다.")
             );
 
